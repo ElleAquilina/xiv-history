@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "docker-compose up -d"
+    "dev": "docker-compose up -d",
+    "dev:queue": "docker-compose up -d queue",
+    "dev:db": "docker-compose up -d db dbmate",
+    "dev:ws": "node -r ts-node/register --env-file=.env apps/publisher/src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +15,7 @@
   "devDependencies": {
     "@types/node": "^22.15.17",
     "@types/pg": "^8.15.1",
+    "@types/rascal": "^10.2.1",
     "@types/ws": "^8.18.1",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
