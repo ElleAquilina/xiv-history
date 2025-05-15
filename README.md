@@ -12,10 +12,10 @@ Thus, instead of wasting time on configuration, sychronization, and deployment b
 The main services of this repo include:
 - **_Web App_**: A ReactJS web application for viewing market board data
 - **_API_**: A Node/ExpressJS standalone API used by the web app (and eventually for public use)
-- **_Database_**: Database holding market board and web related data (users, etc)
-- **_Websocket_**: Websocket connection to the Universalis service that produces market board listing and sale data
+- **_Database_**: PostgreSQL database holding market board and web related data (users, etc)
+- **_Producer_**: Websocket connection to Universalis websocket, sending incoming data to RabbitMQ queue
 - **_Queue_**: RabbitMQ queue that holds incoming messages from the websocket connection
-- **_Workers_**: A listing and sales worker(s) that consume messages and upsert them into the PostgreSQL database
+- **_Consumers_**: Listing and sales queue consumer(s) that consume messages and upsert them into the PostgreSQL database
 - **_Metrics_**: Prometheus and grafana handle monitoring and metrics across the other services
 - **_Caddy_**: Handles reverse proxying to web application (and eventually the API)
 
@@ -28,19 +28,21 @@ The folder structure is primarily broken down into their individual services. To
 ├── apps
 │   ├── api/                    # Node/ExpressJS API
 |   ├── web/                    # ReactJS web application
-|   ├── ws/                     # Websocket consumer
-|   ├── worker-sales/           # Queue workers
-│   └── worker-listings/
+|   ├── publisher/              # Queue publisher and websocket subscriber
+|   └── subscriber/             # Queue subscribers
+|       ├── sales/
+│       └── listings/
 |
 ├── deploy
-│   ├── docker-compose.yml      # Postgres, RabbitMQ, apps deployment
 │   ├── db/                     # Database migration/seed data, DBMate
 │   |   ├── migrations/
 |   |   └── seeds/
-│   └── monitoring/
-│       ├── prometheus.yml      # Prometheus config
-│       └── grafana-dashboards/ # Grafana config
+│   ├── monitoring/             # Prometheus/Grafana configs
+│   |   ├── prometheus.yml
+│   |   └── grafana-dashboards/
+│   └── scripts/                # Scripts needed for deployment
 |
+├── docker-compose.yml          # Docker deployment configuration for all services
 └── ...all the rest (shared configs like linters, etc.)
 ```
 
